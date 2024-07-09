@@ -40,6 +40,10 @@ jobs:
       - name: Run composer install
         run: composer install -n --prefer-dist
 
+      - name: Prepare Laravel Application
+        env:
+          APP_ENV: testing
+        run: php artisan key:generate
 
       - name: Set app env
         run: export APP_ENV=testing
