@@ -33,7 +33,7 @@ services:
         volumes:
             - ./:/app
             - .docker/local/nginx/:/etc/nginx/conf.d/
-            - .docker/local/nginx/logs/:/var/log/nginx/
+            - ./storage/logs/:/var/log/nginx/
         networks:
             - src_default
         depends_on:
