@@ -1,0 +1,79 @@
+services:
+
+    #PHP Service
+    laravel-skeleton-app:
+        container_name: laravel-skeleton-app
+        build:
+            context: .
+            dockerfile: .docker/prod/Dockerfile
+        restart: unless-stopped
+        working_dir: /app
+        volumes:
+            - ./:/app
+        networks:
+            - src_default
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        ports:
+            - '${APP_PORT:-9000}:9000'
+            - '3000:3000'
+            - '3001:3001'
+            - '5173:5173'
+        depends_on:
+            - laravel-skeleton-redis
+            - laravel-skeleton-db
+
+    #Nginx Service
+    laravel-skeleton-webserver:
+        container_name: laravel-skeleton-webserver
+        image: nginx:alpine
+        restart: unless-stopped
+        ports:
+            - "${FORWARD_APP_PORT:-8001}:80"
+        volumes:
+            - ./:/app
+            - .docker/local/nginx/:/etc/nginx/conf.d/
+            - .docker/local/nginx/logs/:/var/log/nginx/
+        networks:
+            - src_default
+        depends_on:
+            - laravel-skeleton-app
+
+    # Mongodb
+    laravel-skeleton-db:
+        container_name: laravel-skeleton-db
+        image: mysql:latest
+        restart: always
+        environment:
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: "%"
+        networks:
+            - src_default
+        volumes:
+            - db-data:/var/lib/mysql
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+
+    #Redis
+    laravel-skeleton-redis:
+        container_name: laravel-skeleton-redis
+        image: redis:5-alpine
+        volumes:
+            - redis-data:/data
+        restart: unless-stopped
+        networks:
+            - src_default
+
+#Docker Networks
+networks:
+    src_default:
+
+#Docker Volumes
+volumes:
+    db-data:
+        driver: local
+    redis-data:
+        driver: local
