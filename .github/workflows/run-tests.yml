@@ -47,8 +47,11 @@ jobs:
 
       - name: Prepare Laravel Application
         run: |
-            cp .env.testing .env
-            php artisan key:generate
+          cp .env.testing .env
+          php artisan key:generate
+          php artisan config:cache
+        env:
+          APP_ENV: testing
 
       - name: Execute tests
         run: vendor/bin/pest --ci
