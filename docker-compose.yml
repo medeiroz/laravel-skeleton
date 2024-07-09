@@ -5,7 +5,7 @@ services:
         container_name: laravel-skeleton-app
         build:
             context: .
-            dockerfile: .docker/prod/Dockerfile
+            dockerfile: .docker/local/Dockerfile
         restart: unless-stopped
         working_dir: /app
         volumes:
