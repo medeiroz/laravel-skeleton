@@ -44,7 +44,9 @@ jobs:
         run: composer show -D
 
       - name: Prepare Laravel Application
-        run: php artisan key:generate
+        run: |
+            cp .env.testing .env
+            php artisan key:generate
 
       - name: Execute tests
         env:
