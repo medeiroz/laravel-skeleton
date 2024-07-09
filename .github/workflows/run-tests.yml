@@ -39,6 +39,8 @@ jobs:
 
       - name: Run composer install
         run: composer install -n --prefer-dist
+        env:
+          APP_ENV: testing
 
       - name: List Installed Dependencies
         run: composer show -D
@@ -49,6 +51,4 @@ jobs:
             php artisan key:generate
 
       - name: Execute tests
-        env:
-          APP_ENV: testing
         run: vendor/bin/pest --ci
