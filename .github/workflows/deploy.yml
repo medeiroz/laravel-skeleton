@@ -19,14 +19,14 @@ jobs:
       - name: Build with Docker
         run: docker build -t ${{ env.APP_SLUG }} -f .docker/prod/Dockerfile .
 
-      - name: Package the Container
-        run: docker export ${{ env.APP_SLUG }} -o artifact.tar.gz
+      - name: Package the Image
+        run: docker save -o artifact.tar ${{ env.APP_SLUG }}
 
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: artifact.tar.gz
+          path: artifact.tar
 
   deploy:
     environment: production
@@ -46,7 +46,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
-          source: artifact.tar.gz
+          source: artifact.tar
           target: /app/
 
       - name: Deploy environment variables
@@ -99,7 +99,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /app
-            docker import artifact.tar.gz ${{ vars.APP_SLUG }}
-            rm artifact.tar.gz
+            docker load --input fedora.tar
+            rm artifact.tar
             whoami
             ls -la
