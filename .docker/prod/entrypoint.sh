@@ -2,8 +2,7 @@
 
 set -e
 
-# Installation of dependencies
-composer update
+# Dump autoload and clear cache
 composer dump-autoload --optimize
 composer clear-cache
 npm update

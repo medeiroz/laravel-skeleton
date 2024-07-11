@@ -50,6 +50,9 @@ WORKDIR /app
 
 ARG COMPOSER_ALLOW_SUPERUSER=1
 
+RUN composer install --optimize-autoloader --no-dev --no-interaction
+RUN npm ci
+
 # Determine entrypoint
 COPY .docker/prod/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
