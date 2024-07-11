@@ -12,6 +12,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Print APP_SLUG
+        run: |
+          echo "var=${{ vars.APP_SLUG }}"
+          echo "env=${{ env.APP_SLUG }}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
