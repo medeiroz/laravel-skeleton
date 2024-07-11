@@ -13,9 +13,6 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     steps:
-      - name: Starting Build for ${{ env.env_var }}
-        run: echo "Starting Build for ${{ env.env_var }}"
-
       - name: Checkout code
         uses: actions/checkout@v4
 
