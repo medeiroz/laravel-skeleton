@@ -1,4 +1,15 @@
-# Install
+# Laravel Skeleton
+This is a skeleton project to start a new Laravel project with Docker, WSL and Windows Terminal
+
+## Resources and Packages
+- (Laravel 11)[https://laravel.com/docs/11.x]
+- (Docker)[https://www.docker.com/]
+- CI/CD with (GitHub Actions)[https://docs.github.com/en/actions]
+- Automated tests with (Pest)[https://pestphp.com/]
+- Analyze code with (PHPStan)[https://phpstan.org/]
+- Style code fixer with (Laravel Pint)[https://laravel.com/docs/11.x/pint]
+
+## Install
 
 ## Install Windows Terminal
 [Windows terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started)
