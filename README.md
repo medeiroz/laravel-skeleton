@@ -101,14 +101,7 @@ Copy .env file
 ```bash
 cp .env.example .env
 ```
-Fill database variables in .env
-
-Copy docker-compose file
-```bash
-cp docker-compose.example.yml docker-compose.yml
-```
-
-Fill information (same DB password)
+Fill database variables in .env file
 
 
 ### Start Docker
@@ -116,31 +109,35 @@ Fill information (same DB password)
 docker compose up -d
 ```
 
+### Access container
+```bash
+docker compose exec laravel-skeleton bash
+```
+
 ### Install Dependencies
 ```bash
-sail composer install
-sail composer dump-autoload
+composer install
 ```
 
 ### Create APP key
 ```bash
-sail artisan key:generate
+php artisan key:generate
 ```
 
 ### Run migrations and seed
 ```bash
-sail artisan migrate --seed
+php artisan migrate --seed
 ```
 
 ### install node dependencies
 ```bash
-sail npm install
+npm install
 ```
 
 ## dev server
 
 ```bash
-sail npm run dev
+npm run dev
 ```
 
 
@@ -163,23 +160,6 @@ sail npm run dev
 - Select Folder
 
 
+## Access Project
 
-## Renew Certificate
-
-```bash
-docker-compose run --rm --entrypoint "\
-  certbot certonly --webroot -w /var/www/certbot \
-    --email smedeiros.flavio@gmail.com \
-    -d laravel-skeleton.com \
-    -d laravel-skeleton.com \
-    --agree-tos \
-    --force-renewal" certbot
-
-```
-
-
-## Check health
-
-[https://laravel-skeleton.com/health?fresh](https://laravel-skeleton.com/health?fresh)
-
-[http://local.laravel-skeleton.com/health?fresh](http://local.laravel-skeleton.com/health?fresh)
+[https://127.0.0.1:8001](https://127.0.0.1:8001)
