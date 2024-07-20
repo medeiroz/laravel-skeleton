@@ -79,8 +79,8 @@ jobs:
             echo "QUEUE_CONNECTION=${{ vars.QUEUE_CONNECTION }}" >> .env
             echo "CACHE_STORE=${{ vars.CACHE_STORE }}" >> .env
             echo "CACHE_PREFIX=${{ vars.CACHE_PREFIX }}" >> .env
-            echo "REDIS_HOST=${{ vars.REDIS_HOST }}" >> .env
-            echo "REDIS_PASSWORD=${{ vars.REDIS_PASSWORD }}" >> .env
+            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
             echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
             echo "MAIL_MAILER=${{ vars.MAIL_MAILER }}" >> .env
             echo "MAIL_HOST=${{ vars.MAIL_HOST }}" >> .env
@@ -101,7 +101,11 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /app
+            # Stop the running container
+            docker stop ${{ env.APP_SLUG }} || true
+            docker rm ${{ env.APP_SLUG }} || true
+            # Load the image
             docker load --input artifact.tar
             rm artifact.tar
-            whoami
-            ls -la
+            # Run the container
+            docker run -d --name ${{ env.APP_SLUG }} -p ${{ env.APP_PORT }}:9000 ${{ env.APP_SLUG }}
