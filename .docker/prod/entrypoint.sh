@@ -2,11 +2,6 @@
 
 set -e
 
-# Dump autoload and clear cache
-composer dump-autoload --optimize
-composer clear-cache
-npm update
-
 # Configure permissions
 chmod 777 -R storage/
 chmod 777 -R bootstrap/cache/
@@ -21,7 +16,6 @@ php artisan event:cache
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
-
 
 # Start supervisord
 /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
