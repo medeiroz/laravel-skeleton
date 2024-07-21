@@ -45,6 +45,9 @@ jobs:
         with:
           path: .
 
+      - name: List files
+        run: ls -la
+
       - name: Copy artifact via SCP to server
         uses: appleboy/scp-action@v0.1.7
         with:
