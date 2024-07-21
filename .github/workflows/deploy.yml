@@ -10,29 +10,20 @@ env:
 
 jobs:
   build:
-    name: 'Build Docker Image'
+    name: 'Build'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build with Docker
-        run: docker build -t ${{ env.APP_SLUG }} -f .docker/prod/Dockerfile .
-
-      - name: Package the image
-        run: docker save -o ${{ env.APP_SLUG }}.tar ${{ env.APP_SLUG }}
+      - name: Package the artifact
+        run: tar -cf ${{ env.APP_SLUG }}.tar .
 
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact
           path: ${{ env.APP_SLUG }}.tar
-
-      - name: Save swarm file
-        uses: actions/upload-artifact@v4
-        with:
-          name: swarm
-          path: docker-swarm.yml
 
   deploy:
     name: 'Deploy to Production'
@@ -44,12 +35,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact
-          path: .
-
-      - name: Download swarm file
-        uses: actions/download-artifact@v4
-        with:
-          name: swarm
           path: .
 
       - name: Copy artifact via SCP to server
@@ -105,7 +90,7 @@ jobs:
             "VITE_APP_NAME=${{ vars.VITE_APP_NAME }}"
             EOF
 
-      - name: Extract artifact
+      - name: Start deployment
         uses: appleboy/ssh-action@v1.0.3
         with:
           username: ${{ secrets.SSH_USERNAME }}
@@ -113,27 +98,12 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /app
             rm -rf /app/${{ env.APP_SLUG }}
             mkdir -p /app/${{ env.APP_SLUG }}
-            docker load -i /app/${{ env.APP_SLUG }}.tar
+            tar -xvf ${{ env.APP_SLUG }}.tar -C /app/${{ env.APP_SLUG }}
             rm -f ${{ env.APP_SLUG }}.tar
+            cd /app/${{ env.APP_SLUG }}
 
-      - name: Copy swarm file
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          source: swarm
-          target: /app/${{ env.APP_SLUG }}
-
-      - name: Apply Swarm
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          script: docker stack deploy -c /app/${{ env.APP_SLUG }}/docker-swarm.yml ${{ env.APP_SLUG }}
+            docker build -t ${{ env.APP_SLUG }} -f .docker/prod/Dockerfile .
+            # Apply the swarm
+            docker stack deploy -c /app/${{ env.APP_SLUG }}/docker-swarm.yml ${{ env.APP_SLUG }}
