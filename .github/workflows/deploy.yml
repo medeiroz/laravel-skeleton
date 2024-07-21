@@ -48,7 +48,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
-          source: artefact/*
+          source: artifact/*
           target: /app/${{ env.APP_SLUG }}
 
       - name: Deploy environment variables
