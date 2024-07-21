@@ -111,3 +111,14 @@ jobs:
 
             # Apply the swarm
             docker stack deploy -c docker-swarm.yml ${{ env.APP_SLUG }}
+
+      - name: Verify Deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            docker service ls
+            docker stack ps ${{ env.APP_SLUG }}
