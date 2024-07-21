@@ -2,10 +2,12 @@ version: '3.8'
 
 services:
   app:
-    image: 'skeleton'
     container_name: skeleton-app
+    build:
+      context: .
+      dockerfile: .docker/prod/Dockerfile
     volumes:
-      - .env:/app/.env
+      - ./:/app
     deploy:
       replicas: 1
       labels:

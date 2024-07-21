@@ -5,9 +5,8 @@ on:
     branches:
       - main
 env:
-  # Setting an environment variable with the value of a configuration variable
-  env_var: ${{ vars.ENV_CONTEXT_VAR }}
   APP_SLUG: skeleton
+
 
 jobs:
   build:
@@ -20,14 +19,14 @@ jobs:
       - name: Build with Docker
         run: docker build -t ${{ env.APP_SLUG }} -f .docker/prod/Dockerfile .
 
-      - name: Package the Image
-        run: docker save -o artifact.tar ${{ env.APP_SLUG }}
+      - name: Package the artifact
+        run: tar -cf ${{ env.APP_SLUG }}.tar .
 
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: artifact.tar
+          path: ${{ env.APP_SLUG }}.tar
 
   deploy:
     name: 'Deploy to Production'
@@ -48,7 +47,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
-          source: artifact.tar
+          source: ${{ env.APP_SLUG }}.tar
           target: /app/
 
       - name: Deploy environment variables
@@ -59,7 +58,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /app
+            cd /app/${{ env.APP_SLUG }}
             rm -f .env
             cat <<EOF > .env
             "APP_NAME=${{ vars.APP_NAME }}"
@@ -103,15 +102,10 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /app
-
-            # Stop the running container
-            docker stop ${{ env.APP_SLUG }} || true
-            docker rm ${{ env.APP_SLUG }} || true
-            docker rmi ${{ env.APP_SLUG }} || true
-
-            # Load the image
-            docker load --input artifact.tar
-            rm artifact.tar
+            rm -rf /app/${{ env.APP_SLUG }}
+            mkdir -p /app/${{ env.APP_SLUG }}
+            tar -xvf ${{ env.APP_SLUG }}.tar -C /app/${{ env.APP_SLUG }}
+            rm -f ${{ env.APP_SLUG }}.tar
 
             # Run the container
-            docker stack deploy  -c docker-swarm.yml ${{ env.APP_SLUG }}
+            docker stack deploy -c docker-swarm.yml ${{ env.APP_SLUG }}
