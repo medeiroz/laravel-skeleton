@@ -15,3 +15,7 @@ services:
         - "traefik.http.routers.skeleton-app-http.middlewares=redirect-to-https"
     networks:
       - web
+
+networks:
+  web:
+    external: true
