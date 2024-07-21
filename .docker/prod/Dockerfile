@@ -11,6 +11,7 @@ RUN apt update \
     && npm install -g npm
 
 # Copy settings
+COPY .docker/prod/nginx/default.conf /etc/nginx/sites-available/default
 COPY .docker/prod/php/php.ini /usr/local/etc/php/conf.d/php.ini
 COPY .docker/prod/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY .docker/prod/php/php-fpm.conf /usr/local/etc/php/conf.d/php-fpm.conf
@@ -36,9 +37,9 @@ RUN npm ci
 COPY .docker/prod/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# NGINX
+EXPOSE 80
+# PHP-FPM
 EXPOSE 9000
-EXPOSE 3000
-EXPOSE 3001
-EXPOSE 5173
 
 ENTRYPOINT sh /entrypoint.sh

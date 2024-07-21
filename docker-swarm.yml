@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    image: 'skeleton-app'
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.skeleton-app.rule=Host(`skeleton.ticketeriaonline.com`)"
+        - "traefik.http.routers.skeleton-app.entrypoints=websecure"
+        - "traefik.http.routers.skeleton-app.tls=true"
+        - "traefik.http.routers.skeleton-app.tls.certresolver=myresolver"
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+        - "traefik.http.routers.skeleton-app-http.rule=Host(`skeleton.ticketeriaonline.com`)"
+        - "traefik.http.routers.skeleton-app-http.entrypoints=web"
+        - "traefik.http.routers.skeleton-app-http.middlewares=redirect-to-https"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true

@@ -122,7 +122,7 @@ docker compose up -d
 
 ### Access container
 ```bash
-docker compose exec laravel-skeleton bash
+docker compose exec skeleton-app bash
 ```
 
 ### Install Dependencies

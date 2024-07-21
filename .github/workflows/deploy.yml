@@ -7,7 +7,7 @@ on:
 env:
   # Setting an environment variable with the value of a configuration variable
   env_var: ${{ vars.ENV_CONTEXT_VAR }}
-  APP_SLUG: laravel-skeleton
+  APP_SLUG: skeleton-app
 
 jobs:
   build:
@@ -61,36 +61,38 @@ jobs:
           script: |
             cd /app
             rm -f .env
-            echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
-            echo "APP_ENV=${{ vars.APP_ENV }}" >> .env
-            echo "APP_KEY=${{ vars.APP_KEY }}" >> .env
-            echo "APP_DEBUG=${{ vars.APP_DEBUG }}" >> .env
-            echo "APP_URL=${{ vars.APP_URL }}" >> .env
-            echo "LOG_CHANNEL=${{ vars.LOG_CHANNEL }}" >> .env
-            echo "LOG_LEVEL=${{ vars.LOG_LEVEL }}" >> .env
-            echo "DB_CONNECTION=${{ vars.DB_CONNECTION }}" >> .env
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-            echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
-            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-            echo "SESSION_DRIVER=${{ vars.SESSION_DRIVER }}" >> .env
-            echo "FILESYSTEM_DISK=${{ vars.FILESYSTEM_DISK }}" >> .env
-            echo "QUEUE_CONNECTION=${{ vars.QUEUE_CONNECTION }}" >> .env
-            echo "CACHE_STORE=${{ vars.CACHE_STORE }}" >> .env
-            echo "CACHE_PREFIX=${{ vars.CACHE_PREFIX }}" >> .env
-            echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
-            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
-            echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
-            echo "MAIL_MAILER=${{ vars.MAIL_MAILER }}" >> .env
-            echo "MAIL_HOST=${{ vars.MAIL_HOST }}" >> .env
-            echo "MAIL_PORT=${{ vars.MAIL_PORT }}" >> .env
-            echo "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> .env
-            echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
-            echo "MAIL_ENCRYPTION=${{ vars.MAIL_ENCRYPTION }}" >> .env
-            echo "MAIL_FROM_ADDRESS=${{ vars.MAIL_FROM_ADDRESS }}" >> .env
-            echo "MAIL_FROM_NAME=${{ vars.MAIL_FROM_NAME }}" >> .env
-            echo "VITE_APP_NAME=${{ vars.VITE_APP_NAME }}" >> .env
+            cat <<EOF > .env
+            "APP_NAME=${{ vars.APP_NAME }}"
+            "APP_ENV=${{ vars.APP_ENV }}"
+            "APP_KEY=${{ vars.APP_KEY }}"
+            "APP_DEBUG=${{ vars.APP_DEBUG }}"
+            "APP_URL=${{ vars.APP_URL }}"
+            "LOG_CHANNEL=${{ vars.LOG_CHANNEL }}"
+            "LOG_LEVEL=${{ vars.LOG_LEVEL }}"
+            "DB_CONNECTION=${{ vars.DB_CONNECTION }}"
+            "DB_HOST=${{ secrets.DB_HOST }}"
+            "DB_PORT=${{ secrets.DB_PORT }}"
+            "DB_DATABASE=${{ secrets.DB_DATABASE }}"
+            "DB_USERNAME=${{ secrets.DB_USERNAME }}"
+            "DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
+            "SESSION_DRIVER=${{ vars.SESSION_DRIVER }}"
+            "FILESYSTEM_DISK=${{ vars.FILESYSTEM_DISK }}"
+            "QUEUE_CONNECTION=${{ vars.QUEUE_CONNECTION }}"
+            "CACHE_STORE=${{ vars.CACHE_STORE }}"
+            "CACHE_PREFIX=${{ vars.CACHE_PREFIX }}"
+            "REDIS_HOST=${{ secrets.REDIS_HOST }}"
+            "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}"
+            "REDIS_PORT=${{ vars.REDIS_PORT }}"
+            "MAIL_MAILER=${{ vars.MAIL_MAILER }}"
+            "MAIL_HOST=${{ vars.MAIL_HOST }}"
+            "MAIL_PORT=${{ vars.MAIL_PORT }}"
+            "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}"
+            "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}"
+            "MAIL_ENCRYPTION=${{ vars.MAIL_ENCRYPTION }}"
+            "MAIL_FROM_ADDRESS=${{ vars.MAIL_FROM_ADDRESS }}"
+            "MAIL_FROM_NAME=${{ vars.MAIL_FROM_NAME }}"
+            "VITE_APP_NAME=${{ vars.VITE_APP_NAME }}"
+            EOF
 
       - name: Start deployment
         uses: appleboy/ssh-action@v1.0.3
@@ -101,11 +103,15 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /app
+
             # Stop the running container
             docker stop ${{ env.APP_SLUG }} || true
             docker rm ${{ env.APP_SLUG }} || true
+            docker rmi ${{ env.APP_SLUG }} || true
+
             # Load the image
             docker load --input artifact.tar
             rm artifact.tar
+
             # Run the container
-            docker run -d --name ${{ env.APP_SLUG }} -p ${{ env.APP_PORT }}:9000 ${{ env.APP_SLUG }}
+            docker run -d --name ${{ env.APP_SLUG }} -p ${{ env.APP_PORT }}:9000 --env-file .env ${{ env.APP_SLUG }}

@@ -1,8 +1,8 @@
 services:
 
     #PHP Service
-    laravel-skeleton-app:
-        container_name: laravel-skeleton-app
+    skeleton-app:
+        container_name: skeleton-app
         build:
             context: .
             dockerfile: .docker/local/Dockerfile
@@ -15,17 +15,18 @@ services:
         extra_hosts:
             - "host.docker.internal:host-gateway"
         ports:
+            - '${FORWARD_APP_PORT:-8001}:80'
             - '${APP_PORT:-9000}:9000'
             - '3000:3000'
             - '3001:3001'
             - '5173:5173'
         depends_on:
-            - laravel-skeleton-redis
-            - laravel-skeleton-db
+            - skeleton-redis
+            - skeleton-db
 
     #Nginx Service
-    laravel-skeleton-webserver:
-        container_name: laravel-skeleton-webserver
+    skeleton-webserver:
+        container_name: skeleton-webserver
         image: nginx:alpine
         restart: unless-stopped
         ports:
@@ -37,11 +38,11 @@ services:
         networks:
             - src_default
         depends_on:
-            - laravel-skeleton-app
+            - skeleton-app
 
-    # Mongodb
-    laravel-skeleton-db:
-        container_name: laravel-skeleton-db
+    # Database
+    skeleton-db:
+        container_name: skeleton-db
         image: mysql:latest
         restart: always
         environment:
@@ -58,8 +59,8 @@ services:
             - '${FORWARD_DB_PORT:-3306}:3306'
 
     #Redis
-    laravel-skeleton-redis:
-        container_name: laravel-skeleton-redis
+    skeleton-redis:
+        container_name: skeleton-redis
         image: redis:5-alpine
         volumes:
             - redis-data:/data
