@@ -116,7 +116,7 @@ jobs:
             cd /app
             rm -rf /app/${{ env.APP_SLUG }}
             mkdir -p /app/${{ env.APP_SLUG }}
-            tar -xvf ${{ env.APP_SLUG }}.tar -C /app/${{ env.APP_SLUG }}
+            docker load -i /app/${{ env.APP_SLUG }}.tar
             rm -f ${{ env.APP_SLUG }}.tar
 
       - name: Copy swarm file
