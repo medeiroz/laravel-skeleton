@@ -1,6 +1,6 @@
 services:
   skeleton:
-    image: skeleton
+    image: skeleton:latest
     deploy:
       replicas: 1
       labels:

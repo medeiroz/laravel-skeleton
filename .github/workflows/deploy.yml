@@ -16,14 +16,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Package the artifact
-        run: tar -cf ${{ env.APP_SLUG }}.tar .
+      - name: Build with Docker
+        run: docker build -t ${{ env.APP_SLUG }}:latest -f .docker/prod/Dockerfile .
+
+      - name: Package the image
+        run: docker save -o artefact.tar ${{ env.APP_SLUG }}:latest
 
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: ${{ env.APP_SLUG }}.tar
+          path: artefact.tar
+
+      - name: Save swarm configuration
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-swarm
+          path: docker-swarm.yml
 
   deploy:
     name: 'Deploy to Production'
@@ -34,7 +43,6 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: artifact
           path: .
 
       - name: Copy artifact via SCP to server
@@ -44,8 +52,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
-          source: ${{ env.APP_SLUG }}.tar
-          target: /app/
+          source: artefact.tar,docker-swarm.yml
+          target: /app/${{ env.APP_SLUG }}
 
       - name: Deploy environment variables
         uses: appleboy/ssh-action@v1.0.3
@@ -98,13 +106,10 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            rm -rf /app/${{ env.APP_SLUG }}
-            mkdir -p /app/${{ env.APP_SLUG }}
-            tar -xvf /app/${{ env.APP_SLUG }}.tar -C /app/${{ env.APP_SLUG }}
-            rm -f /app/${{ env.APP_SLUG }}.tar
             cd /app/${{ env.APP_SLUG }}
-            mv /app/.env /app/${{ env.APP_SLUG }}/.env
 
-            docker build -t ${{ env.APP_SLUG }} -f .docker/prod/Dockerfile . --no-cache
+            docker load -i artefact.tar
+            rm -f artefact.tar
+
             # Apply the swarm
-            docker stack deploy -c /app/${{ env.APP_SLUG }}/docker-swarm.yml ${{ env.APP_SLUG }}
+            docker stack deploy -c docker-swarm.yml ${{ env.APP_SLUG }}
