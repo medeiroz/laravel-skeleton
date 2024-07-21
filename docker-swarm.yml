@@ -1,13 +1,6 @@
-version: '3.8'
-
 services:
-  app:
-    container_name: skeleton-app
-    build:
-      context: .
-      dockerfile: .docker/prod/Dockerfile
-    volumes:
-      - ./:/app
+  skeleton:
+    image: skeleton
     deploy:
       replicas: 1
       labels:
@@ -22,7 +15,3 @@ services:
         - "traefik.http.routers.skeleton-app-http.middlewares=redirect-to-https"
     networks:
       - web
-
-networks:
-  web:
-    external: true
