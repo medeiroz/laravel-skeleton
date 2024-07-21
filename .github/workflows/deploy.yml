@@ -103,6 +103,7 @@ jobs:
             tar -xvf /app/${{ env.APP_SLUG }}.tar -C /app/${{ env.APP_SLUG }}
             rm -f /app/${{ env.APP_SLUG }}.tar
             cd /app/${{ env.APP_SLUG }}
+            mv /app/.env /app/${{ env.APP_SLUG }}/.env
 
             docker build -t ${{ env.APP_SLUG }} -f .docker/prod/Dockerfile .
             # Apply the swarm
