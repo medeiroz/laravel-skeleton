@@ -105,6 +105,6 @@ jobs:
             cd /app/${{ env.APP_SLUG }}
             mv /app/.env /app/${{ env.APP_SLUG }}/.env
 
-            docker build -t ${{ env.APP_SLUG }} -f .docker/prod/Dockerfile .
+            docker build -t ${{ env.APP_SLUG }} -f .docker/prod/Dockerfile . --no-cache
             # Apply the swarm
             docker stack deploy -c /app/${{ env.APP_SLUG }}/docker-swarm.yml ${{ env.APP_SLUG }}
