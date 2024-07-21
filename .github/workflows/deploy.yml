@@ -41,8 +41,8 @@ jobs:
         with:
           path: .
 
-      - name: List files before unpacking
-        run: ls -la
+      - name: List files before unpacking recursive
+        run: ls -la -R
 
       - name: Unpack artifact
         run: tar -xvf artifact
