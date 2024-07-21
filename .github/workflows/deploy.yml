@@ -103,6 +103,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /app/${{ env.APP_SLUG }}
+            mv ./artifact/* .
+            rm -rf ./artifact
 
             docker load -i image.tar
             rm -f image.tar
