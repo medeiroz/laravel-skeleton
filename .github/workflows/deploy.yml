@@ -57,7 +57,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
-          source: artefact.tar,docker-swarm.yml
+          source: artefact/image.tar,artefact/docker-swarm.yml
           target: /app/${{ env.APP_SLUG }}
 
       - name: Deploy environment variables
@@ -113,8 +113,8 @@ jobs:
           script: |
             cd /app/${{ env.APP_SLUG }}
 
-            docker load -i artefact.tar
-            rm -f artefact.tar
+            docker load -i image.tar
+            rm -f image.tar
 
             # Apply the swarm
             docker stack deploy -c docker-swarm.yml ${{ env.APP_SLUG }}
