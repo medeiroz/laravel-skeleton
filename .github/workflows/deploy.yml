@@ -20,19 +20,15 @@ jobs:
         run: docker build -t ${{ env.APP_SLUG }}:latest -f .docker/prod/Dockerfile .
 
       - name: Package the image
-        run: docker save -o artefact.tar ${{ env.APP_SLUG }}:latest
+        run: docker save -o image.tar ${{ env.APP_SLUG }}:latest
 
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: artefact.tar
-
-      - name: Save swarm configuration
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-swarm
-          path: docker-swarm.yml
+          path: |
+            image.tar
+            docker-swarm.yml
 
   deploy:
     name: 'Deploy to Production'
@@ -45,7 +41,13 @@ jobs:
         with:
           path: .
 
-      - name: List files
+      - name: List files before unpacking
+        run: ls -la
+
+      - name: Unpack artifact
+        run: tar -xvf artifact
+
+      - name: List files after unpack
         run: ls -la
 
       - name: Copy artifact via SCP to server
