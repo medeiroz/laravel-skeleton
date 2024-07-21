@@ -108,4 +108,4 @@ jobs:
             rm -f ${{ env.APP_SLUG }}.tar
 
             # Run the container
-            docker stack deploy -c docker-swarm.yml ${{ env.APP_SLUG }}
+            docker stack deploy -c /app/${{ env.APP_SLUG }}/docker-swarm.yml ${{ env.APP_SLUG }}
