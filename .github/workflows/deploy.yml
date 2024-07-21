@@ -114,4 +114,4 @@ jobs:
             rm artifact.tar
 
             # Run the container
-            docker run -d --name ${{ env.APP_SLUG }} -p ${{ env.APP_PORT }}:9000 --env-file .env ${{ env.APP_SLUG }}
+            docker stack deploy  -c docker-swarm.yml ${{ env.APP_SLUG }}
