@@ -100,8 +100,8 @@ jobs:
           script: |
             rm -rf /app/${{ env.APP_SLUG }}
             mkdir -p /app/${{ env.APP_SLUG }}
-            tar -xvf ${{ env.APP_SLUG }}.tar -C /app/${{ env.APP_SLUG }}
-            rm -f ${{ env.APP_SLUG }}.tar
+            tar -xvf /app/${{ env.APP_SLUG }}.tar -C /app/${{ env.APP_SLUG }}
+            rm -f /app/${{ env.APP_SLUG }}.tar
             cd /app/${{ env.APP_SLUG }}
 
             docker build -t ${{ env.APP_SLUG }} -f .docker/prod/Dockerfile .
