@@ -108,7 +108,7 @@ jobs:
             rm -rf ./artifact
 
             # Login to the registry
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ${{ env.DOCKER_REGISTRY }} -u "${{ env.DOCKER_USERNAME }}" --password-stdin
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ${{ env.DOCKER_REGISTRY }} -u "${{ github.repository_owner }}" --password-stdin
 
             # Apply the swarm
             docker stack deploy -c docker-swarm.yml ${{ env.APP_SLUG }}
