@@ -13,13 +13,13 @@ services:
         - "traefik.http.routers.skeleton-http.rule=Host(`skeleton.ticketeriaonline.com`)"
         - "traefik.http.routers.skeleton-http.entrypoints=web"
 #        - "traefik.http.routers.skeleton-http.middlewares=redirect-to-https"
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     networks:
       - web
-    restart_policy:
-      condition: on-failure
-      delay: 5s
-      max_attempts: 3
-      window: 120s
 
 networks:
   web:
