@@ -12,7 +12,7 @@ services:
         - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
         - "traefik.http.routers.skeleton-http.rule=Host(`skeleton.ticketeriaonline.com`)"
         - "traefik.http.routers.skeleton-http.entrypoints=web"
-#        - "traefik.http.routers.skeleton-http.middlewares=redirect-to-https"
+        - "traefik.http.routers.skeleton-http.middlewares=redirect-to-https"
       restart_policy:
         condition: on-failure
         delay: 5s
