@@ -6,7 +6,8 @@ on:
       - main
 env:
   APP_SLUG: skeleton
-
+  DOCKER_REGISTRY: ghcr.io
+  DOCKER_REPOSITORY : ${{ env.DOCKER_USERNAME }}/${{ env.APP_SLUG }}
 
 jobs:
   build:
@@ -16,19 +17,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build with Docker
-        run: docker build -t ${{ env.APP_SLUG }}:latest -f .docker/prod/Dockerfile .
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ${{ env.DOCKER_REGISTRY }} -u "${{ env.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Package the image
-        run: docker save -o image.tar ${{ env.APP_SLUG }}:latest
+      - name: Build with Docker
+        run: docker build -t ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:latest -f .docker/prod/Dockerfile .
+
+      - name: Push to GitHub Container Registry
+        run: docker push ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REPOSITORY }}:latest
 
       - name: Save artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: |
-            image.tar
-            docker-swarm.yml
+          path: docker-swarm.yml
 
   deploy:
     name: 'Deploy to Production'
@@ -106,8 +108,8 @@ jobs:
             mv ./artifact/* .
             rm -rf ./artifact
 
-            docker load -i image.tar
-            rm -f image.tar
+            # Login to the registry
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ${{ env.DOCKER_REGISTRY }} -u "${{ env.DOCKER_USERNAME }}" --password-stdin
 
             # Apply the swarm
             docker stack deploy -c docker-swarm.yml ${{ env.APP_SLUG }}

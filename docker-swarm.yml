@@ -1,6 +1,6 @@
 services:
   skeleton:
-    image: skeleton:latest
+    image: ghcr.io/medeiroz/skeleton:latest
     deploy:
       replicas: 1
       labels:
