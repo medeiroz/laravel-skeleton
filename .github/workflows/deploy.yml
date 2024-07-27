@@ -111,7 +111,7 @@ jobs:
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ${{ env.DOCKER_REGISTRY }} -u "${{ github.repository_owner }}" --password-stdin
 
             # Apply the swarm
-            docker stack deploy --with-registry-auth -c docker-swarm.yml ${{ env.APP_SLUG }}
+            docker stack deploy --with-registry-auth --detach=true -c docker-swarm.yml ${{ env.APP_SLUG }}
 
       - name: Verify Deployment
         uses: appleboy/ssh-action@v1.0.3

@@ -5,19 +5,15 @@ services:
       replicas: 1
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.skeleton.rule=Host(`skeleton.ticketeriaonline.com`)"
+        - "traefik.http.routers.skeleton.rule=Host(`local.ticketeriaonline.com`)"
         - "traefik.http.routers.skeleton.entrypoints=web,websecure"
-        - "traefik.http.routers.skeleton.tls=true"
-        - "traefik.http.routers.skeleton.tls.certresolver=myresolver"
-        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-        - "traefik.http.routers.skeleton-http.rule=Host(`skeleton.ticketeriaonline.com`)"
-        - "traefik.http.routers.skeleton-http.entrypoints=web"
-        - "traefik.http.routers.skeleton-http.middlewares=redirect-to-https"
       restart_policy:
         condition: on-failure
         delay: 5s
         max_attempts: 3
         window: 120s
+    ports:
+      - 8080:80
     networks:
       - web
 
