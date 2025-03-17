@@ -1056,16 +1056,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.44.1",
+            "version": "v11.44.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "0883d4175f4e2b5c299e7087ad3c74f2ce195c6d"
+                "reference": "f85216c82cbd38b66d67ebd20ea762cb3751a4b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/0883d4175f4e2b5c299e7087ad3c74f2ce195c6d",
-                "reference": "0883d4175f4e2b5c299e7087ad3c74f2ce195c6d",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/f85216c82cbd38b66d67ebd20ea762cb3751a4b4",
+                "reference": "f85216c82cbd38b66d67ebd20ea762cb3751a4b4",
                 "shasum": ""
             },
             "require": {
@@ -1267,7 +1267,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-03-05T15:34:10+00:00"
+            "time": "2025-03-12T14:34:30+00:00"
         },
         {
             "name": "laravel/horizon",
@@ -2590,16 +2590,16 @@
         },
         {
             "name": "opcodesio/log-viewer",
-            "version": "v3.15.0",
+            "version": "v3.15.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opcodesio/log-viewer.git",
-                "reference": "927c2ab872a4b1ee2eb213051c847f53539e6c92"
+                "reference": "ee105a9b6dfe7054514f1b43561abc3dc32b8c87"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opcodesio/log-viewer/zipball/927c2ab872a4b1ee2eb213051c847f53539e6c92",
-                "reference": "927c2ab872a4b1ee2eb213051c847f53539e6c92",
+                "url": "https://api.github.com/repos/opcodesio/log-viewer/zipball/ee105a9b6dfe7054514f1b43561abc3dc32b8c87",
+                "reference": "ee105a9b6dfe7054514f1b43561abc3dc32b8c87",
                 "shasum": ""
             },
             "require": {
@@ -2662,7 +2662,7 @@
             ],
             "support": {
                 "issues": "https://github.com/opcodesio/log-viewer/issues",
-                "source": "https://github.com/opcodesio/log-viewer/tree/v3.15.0"
+                "source": "https://github.com/opcodesio/log-viewer/tree/v3.15.2"
             },
             "funding": [
                 {
@@ -2674,7 +2674,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-20T10:47:36+00:00"
+            "time": "2025-03-16T11:40:46+00:00"
         },
         {
             "name": "opcodesio/mail-parser",
